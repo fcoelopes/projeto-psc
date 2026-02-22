@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Project | Nginx Server PSC</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="manifest" href="img/site.webmanifest">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: var(--gradient);
+            color: white;
+            padding: 0 20px;
+            clip-path: ellipse(150% 100% at 50% 0%);
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        /* Status Card */
+        .status-container {
+            max-width: 800px;
+            margin: -100px auto 50px;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item h3 { color: var(--primary); font-size: 1.5rem; }
+        .stat-item p { color: #64748b; font-size: 0.875rem; font-weight: bold; }
+
+        footer { text-align: center; padding: 40px 0; color: #94a3b8; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="badge">Nginx Web Server</span>
+            <h1>Infraestrutura em Nuvem</h1>
+            <p>Este servidor foi criado como parte do projeto integrador do Módulo Básico do Curso de Cloud (PSC) do Capacita iRede.</p>
+        </div>
+    </section>
+
+    <div class="status-container">
+        <div class="card">
+            <div class="stat-item">
+                <p>STATUS</p>
+                <h3>Online</h3>
+            </div>
+            <div class="stat-item">
+                <p>AMBIENTE</p>
+                <h3>Produção</h3>
+            </div>
+            <div class="stat-item">
+                <p>SERVIÇO</p>
+                <h3>Nginx Alpine</h3>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Francisco Edson Lopes da Silva. Todos os direitos reservados.
+    </footer>
+
+</body>
+</html>

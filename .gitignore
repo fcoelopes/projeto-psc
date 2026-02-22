@@ -1,0 +1,38 @@
+# --- Terraform ---
+# Arquivos de estado (contêm segredos em texto plano)
+*.tfstate
+*.tfstate.backup
+.terraform/
+*.tfvars
+*.tfvars.json
+
+# Arquivos de log e crash
+*.log
+crash.log
+
+# --- Ansible ---
+# Arquivos de inventário gerados dinamicamente
+ansible/inventory.ini
+terraform/inventory.ini
+
+# Arquivos de retry e logs
+*.retry
+ansible_debug.log
+
+# --- Segurança (CRÍTICO) ---
+# Chaves SSH privadas (nunca envie para o Git!)
+*.pem
+*.pub
+id_rsa
+projeto_key*
+
+# --- Docker ---
+# Dados de volumes locais (se houver)
+.docker/
+docker-compose.override.yml
+
+# --- Sistema e Editores ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

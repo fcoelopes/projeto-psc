@@ -1,0 +1,155 @@
+# DOCUMENTATION
+# ==============================================================================
+# Playbook: Deploy Servidor NGINX no AWS EC2
+# 
+# Purpose:
+#   Automates the installation and configuration of Docker Engine on AWS EC2
+#   instances running Ubuntu. This playbook performs a clean Docker installation
+#   by removing legacy versions, configuring the official Docker repository,
+#   and setting up the runtime environment.
+#
+# Target Hosts: all
+# Privileges: Requires sudo access (become: true)
+#
+# Task Summary:
+#   1. Removes old Docker versions and related packages to avoid conflicts
+#   2. Cleans up residual Docker files, sockets, and network configurations
+#   3. Updates APT package cache with retry logic for timeout handling
+#   4. Installs prerequisite packages (certificates, curl, Python Docker SDK, AWS CLI)
+#   5. Configures Docker's official GPG key and repository for Ubuntu
+#   6. Installs Docker Engine and Docker Compose from official repository
+#   7. Ensures Docker daemon is running and enabled at boot
+#   8. Grants docker group permissions to the Ubuntu user for non-sudo access
+#
+# Key Features:
+#   - Retry mechanisms for network-dependent tasks
+#   - Idempotent operations with proper state management
+#   - Non-interactive installation (DEBIAN_FRONTEND: noninteractive)
+#   - Official Docker repository configuration with GPG verification
+#   - Systemd integration for service management
+#
+# Prerequisites:
+#   - Ubuntu-based EC2 instance with internet access
+#   - Ansible control node with connectivity to target hosts
+#   - Sufficient disk space and permissions for package installation
+#
+# Notes:
+#   - User 'ubuntu' is granted docker group membership (requires re-login)
+#   - Task 5 skips execution if Docker repository already configured
+#   - Retries with delays mitigate APT lock and network contention issues
+# ==============================================================================
+---
+- name: Deploy Servidor NGINX no AWS EC2
+  hosts: all
+  become: true
+
+  tasks:
+    - name: 1. Remover versões antigas do Docker e dependências
+      apt:
+        name:
+          - docker.io
+          - docker-doc
+          - docker-compose
+          - docker-compose-v2
+          - podman-docker
+          - containerd
+          - runc
+          - docker-ce
+          - docker-ce-cli
+        state: absent
+        purge: yes
+
+    - name: 2. Limpar arquivos residuais de sockets e redes
+      shell: |
+        rm -rf /var/lib/docker
+        rm -rf /var/lib/containerd
+        rm -f /var/run/docker.sock
+      changed_when: true
+
+    - name: 3. Aguardar lock do APT e atualizar cache
+      apt:
+        update_cache: yes
+      register: apt_update
+      until: apt_update is success
+      retries: 15
+      delay: 20
+
+    - name: 4. Instalar dependências iniciais
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - software-properties-common
+          - python3-pip
+          - python3-docker
+          - awscli
+        state: present
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+      register: dep_install
+      until: dep_install is success
+      retries: 5
+      delay: 15
+
+    - name: 5. Configurar Chave GPG e Repositório Oficial
+      shell: |
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+        echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable" > /etc/apt/sources.list.d/docker.list
+      args:
+        creates: /etc/apt/sources.list.d/docker.list
+
+    - name: 6. Instalar Docker Engine (Official) com Retries
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+      register: docker_install
+      until: docker_install is success
+      retries: 5
+      delay: 20
+
+    - name: 7. Garantir que o serviço está limpo e ativo
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+    - name: 8. Adicionar usuário ubuntu ao grupo docker
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+      become: true
+
+    - name: 9. Resetar a conexão para as permissões entrarem em vigor
+      meta: reset_connection
+
+    - name: 10. Autenticar o Docker no AWS ECR
+      shell: "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ecr_url }}"
+      changed_when: false
+
+    - name: 11. Baixar a imagem customizada do ECR
+      community.docker.docker_image:
+        name: "{{ ecr_url }}"
+        source: pull
+        tag: latest
+
+    - name: 12. Iniciar o container do Nginx
+      community.docker.docker_container:
+        name: web-server
+        image: "{{ ecr_url }}:latest"
+        state: started
+        restart_policy: always
+        ports:
+          - "80:80"
