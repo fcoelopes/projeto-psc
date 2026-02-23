@@ -99,7 +99,7 @@ resource "aws_eip" "nginx_eip" {
 resource "aws_ami_from_instance" "nginx_backup" {
   name               = "ami-nginx-server-psc-final"
   source_instance_id = aws_instance.nginx_server.id
-  
+
   # Importante: garante que a AMI só seja criada após o Ansible terminar
   # (Você pode comentar isso após a primeira execução)
   depends_on = [aws_instance.nginx_server]

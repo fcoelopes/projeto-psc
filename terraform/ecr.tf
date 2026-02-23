@@ -22,6 +22,10 @@ resource "aws_ecr_repository" "projeto_repository" {
   name                 = "psc-nginx"
   image_tag_mutability = "MUTABLE"
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   image_scanning_configuration {
     scan_on_push = true
   }
