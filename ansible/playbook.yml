@@ -153,3 +153,5 @@
         restart_policy: always
         ports:
           - "80:80"
+        volumes:
+          - /home/ubuntu/logs/nginx:/var/log/nginx

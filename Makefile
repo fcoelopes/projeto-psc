@@ -46,7 +46,7 @@ ansible-ping: ## Testa a conexão com a EC2
 	cd ansible && ansible webservers -i inventory.ini -m ping
 
 deploy: ## Executa o deploy final via Ansible
-	cd ansible && ansible-playbook -i inventory.ini deploy.yml
+	cd ansible && ansible-playbook -i inventory.ini playbook.yml
 
 # --- Atalhos Mestres ---
 all: tf-apply docker-push deploy ## Executa o pipeline completo do zero
