@@ -513,4 +513,4 @@ Para dúvidas ou problemas:
 
 **Última atualização**: 2026-03-02
 
-Desenvolvido com ❤️ para o PSC Cloud Project
+Desenvolvido com ❤️ para o PSC Capacita iRede
