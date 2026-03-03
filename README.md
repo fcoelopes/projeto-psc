@@ -511,6 +511,6 @@ Para dúvidas ou problemas:
 
 ---
 
-**Última atualização**: 2026-02-23
+**Última atualização**: 2026-03-02
 
 Desenvolvido com ❤️ para o PSC Cloud Project
